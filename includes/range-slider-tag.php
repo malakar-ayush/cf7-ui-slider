@@ -1,7 +1,7 @@
 <?php
-if ( ! class_exists( 'SLIDER_UI_TAG' ) ) {
+if ( ! class_exists( 'Range_UI_Slider' ) ) {
 
-	class SLIDER_UI_TAG {
+	class Range_UI_Slider {
 		private static $instance;
 
 		public function __construct() {
@@ -41,6 +41,7 @@ if ( ! class_exists( 'SLIDER_UI_TAG' ) ) {
 				wp_enqueue_style( 'ui-slider-style-one' );
 			}
 		}
+
 		public function get_cf7_ui_slider( $tag ) {
 			$tag                = new WPCF7_FormTag ( $tag );
 			$class              = wpcf7_form_controls_class( $tag->type, 'wpcf7-text' );
@@ -57,14 +58,15 @@ if ( ! class_exists( 'SLIDER_UI_TAG' ) ) {
 			/*atts for hidden field */
 			$hidden_field_atts          = array();
 			$hidden_field_atts['type']  = 'hidden';
-			$hidden_field_atts['value'] = ! empty( $atts['ui_default'] ) ? $atts['prefix'] .number_format($atts['ui_default']) : $atts['prefix'].number_format($atts['min']);
+			$hidden_field_atts['value'] = ! empty( $atts['ui_default'] ) ? $atts['prefix'] . number_format( $atts['ui_default'] ) . "-" . $atts['prefix'] . number_format( $atts['max'] ) : $atts['prefix'] . number_format( $atts['min'] ) . "-" . $atts['prefix'] . number_format( $atts['max'] );
 			$hidden_field_atts['name']  = $tag->name;
-			$hidden_field_atts['id']    = $atts['id'] . '-single-slider';
+			$hidden_field_atts['id']    = $atts['id'] . '-range-slider';
 
 
 			ob_start();
 			$default_value = ! empty( $atts['ui_default'] ) ? $atts['ui_default'] : $atts['min'];
 			$connect       = ! empty( $atts['connect'] ) ? $atts['connect'] : $hidden_field_atts['id'];
+
 			?>
 
 
@@ -75,25 +77,37 @@ if ( ! class_exists( 'SLIDER_UI_TAG' ) ) {
 						<?php if ( ! empty( $atts['connect'] ) ): ?>
                         $("#<?php echo $atts['connect'] ?>").css('display', 'none');
 						<?php endif; ?>
-                        var tooltip = $('<div class="slider-tooltip" />').css({
+                        var tooltip_one = $('<div class="slider-tooltip range-tooltip" />').css({
+                            position: 'absolute'
+                        });
+                        var tooltip_two = $('<div class="slider-tooltip range-tooltip" />').css({
                             position: 'absolute'
                         });
 
-                        tooltip.text('<?php echo $atts['prefix'] ?><?php  echo number_format($default_value) ?>');
+                        tooltip_one.text('<?php echo $atts['prefix'] ?><?php  echo number_format($default_value )?>');
+                        tooltip_two.text('<?php echo $atts['prefix'] ?><?php  echo number_format($atts['max']) ?>');
 
                         $("#<?php echo $atts['id']; ?>").slider({
-                            range: "min",
+                            range: true,
+                            animate: true,
                             min: <?php echo $atts['min']; ?>,
                             max: <?php echo $atts['max'];?>,
-                            value: <?php    echo $default_value ?>,
+                            values: [<?php    echo $default_value ?>,<?php echo $atts['max'];?>],
                             slide: function (event, ui) {
-                                $("#<?php echo $connect ?>").val('<?php echo $atts['prefix'] ?>' + ui.value.toLocaleString('us-US'));
-                                tooltip.text('<?php echo $atts['prefix'] ?>'+ui.value.toLocaleString('us-US'));
+
+
+                                $("#<?php echo $connect ?>").val('<?php echo $atts['prefix'] ?>' + ui.values[0].toLocaleString('us-US') + '-<?php echo $atts['prefix'] ?>' + ui.values[1].toLocaleString('us-US'));
+                                tooltip_one.text('<?php echo $atts['prefix'] ?>' + ui.values[0].toLocaleString('us-US'));
+                                tooltip_two.text('<?php echo $atts['prefix'] ?>' + ui.values[1].toLocaleString('us-US'));
+
                             },
                             change: function (event, ui) {
                             }
-                        }).find(".ui-slider-handle").append(tooltip);
-//                        $("#<?php //echo $connect  ?>//").val(<?php //echo $default_value ?>//);
+                        });
+                        $('#<?php echo $atts['id']; ?> .ui-slider-handle').first().append(tooltip_one);
+                        $('#<?php echo $atts['id']; ?> .ui-slider-handle').last().append(tooltip_two);
+
+//                        $("#<?php //echo $connect  ?>//").val(<?php //echo $atts['prefix'] ?><!----><?php //echo $default_value ?>//+'-' +<?php //echo $atts['prefix'] ?><!----><?php //echo $atts['max'];?>//);
                     });
                 });
             </script>
@@ -111,7 +125,7 @@ if ( ! class_exists( 'SLIDER_UI_TAG' ) ) {
 
 
 		public function add_ui_slider() {
-			wpcf7_add_form_tag( 'cf7_ui_slider', array( $this, 'get_cf7_ui_slider' ), array(
+			wpcf7_add_form_tag( 'cf7_ui_range_slider', array( $this, 'get_cf7_ui_slider' ), array(
 				'name-attr' => true,
 
 			) );
@@ -120,7 +134,7 @@ if ( ! class_exists( 'SLIDER_UI_TAG' ) ) {
 		function wpcf7_add_tag_generator_slider() {
 
 			$tag_generator = WPCF7_TagGenerator::get_instance();
-			$tag_generator->add( 'cf7_ui_slider', __( 'UI Slider', 'contact-form-7' ), array(
+			$tag_generator->add( 'cf7_ui_range_slider', __( 'Range Slider', 'contact-form-7' ), array(
 				$this,
 				'wpcf7_tag_generator_slider',
 			) );
@@ -133,7 +147,7 @@ if ( ! class_exists( 'SLIDER_UI_TAG' ) ) {
 			$type = $args['id'];
 
 			if ( ! in_array( $type, array( 'min', 'max', 'connect_id', 'ui_default' ) ) ) {
-				$type = 'cf7_ui_slider';
+				$type = 'cf7_ui_range_slider';
 			}
 			$description = __( "When using default value, please put the value in between the max and min range in order to avoid any unwanted issues ", 'contact-form-7' );
 			$desc_link   = '';

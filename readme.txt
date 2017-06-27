@@ -2,8 +2,8 @@
 Contributors: ayush.malakar
 Tags: cf7 UI, Slider, UI Slider
 Requires at least: 4.0
-Tested up to: 4.7.2
-Stable tag: 1.5.1
+Tested up to: 4.8
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,8 +40,17 @@ N/A
 3. Front-end display of the slider
 
 == Changelog ==
+==2.0.0==
+* Removed Connect ID. But Support is still available.
+* No need to add a hidden input type.
+* The tag cf7_ui_slider will now support its own filed form the form. And it will show up in the mail tab as well, just like any other tag
+* Added Prefix Option. You can now add prefix for the tool tip like [cf7_ui_slider cf7_ui_slider-843 id:id min:0 ui_default:5 max:100 prefix:$]
+* Added New Rage Slider
+* Prefix for Range slider added
+* Sample code for range slider [cf7_ui_range_slider cf7_ui_range_slider-361 id:rang min:0 ui_default:5 max:100 prefix:$]
+
 ==1.5.1==
-Bug fixed: Default Value not being passed. Default value will now be sent to email if user does not slider the slider
+* Bug fixed: Default Value not being passed. Default value will now be sent to email if user does not slider the slider
 = 1.5.0 =
 * Added touch support for mobile devices
 * Added css for user-friendly design
