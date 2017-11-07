@@ -54,19 +54,19 @@ if ( ! class_exists( 'Range_UI_Slider' ) ) {
 			$atts['type']       = 'hidden';
 			$atts['connect']    = $tag->get_option( 'connect', 'class', true );
 			$atts['prefix']     = $tag->get_option( 'prefix', '', true );
+			$atts['step']       = $tag->get_option( 'step', '', true );
 			//$value             = (string) reset( $tag->values );
 			/*atts for hidden field */
 			$hidden_field_atts          = array();
 			$hidden_field_atts['type']  = 'hidden';
-			$hidden_field_atts['value'] = ! empty( $atts['ui_default'] ) ? $atts['prefix'] . number_format( $atts['ui_default'] ) . "-" . $atts['prefix'] . number_format( $atts['max'] ) : $atts['prefix'] . number_format( $atts['min'] ) . "-" . $atts['prefix'] . number_format( $atts['max'] );
+			$hidden_field_atts['value'] = ! empty( $atts['ui_default'] ) ? $atts['prefix'] . $atts['ui_default'] . "-" . $atts['prefix'] . $atts['max'] : $atts['prefix'] . $atts['min'] . "-" . $atts['prefix'] . $atts['max'];
 			$hidden_field_atts['name']  = $tag->name;
-			$hidden_field_atts['id']    = $atts['id'] . '-range-slider';
+			$hidden_field_atts['id']    = $atts['id'] . '-single-slider';
 
 
 			ob_start();
 			$default_value = ! empty( $atts['ui_default'] ) ? $atts['ui_default'] : $atts['min'];
 			$connect       = ! empty( $atts['connect'] ) ? $atts['connect'] : $hidden_field_atts['id'];
-
 			?>
 
 
@@ -77,28 +77,29 @@ if ( ! class_exists( 'Range_UI_Slider' ) ) {
 						<?php if ( ! empty( $atts['connect'] ) ): ?>
                         $("#<?php echo $atts['connect'] ?>").css('display', 'none');
 						<?php endif; ?>
-                        var tooltip_one = $('<div class="slider-tooltip range-tooltip" />').css({
+                        var tooltip_one = $('<div class="slider-tooltip" />').css({
                             position: 'absolute'
                         });
-                        var tooltip_two = $('<div class="slider-tooltip range-tooltip" />').css({
+                        var tooltip_two = $('<div class="slider-tooltip" />').css({
                             position: 'absolute'
                         });
 
-                        tooltip_one.text('<?php echo $atts['prefix'] ?><?php  echo number_format($default_value )?>');
-                        tooltip_two.text('<?php echo $atts['prefix'] ?><?php  echo number_format($atts['max']) ?>');
+                        tooltip_one.text('<?php echo $atts['prefix'] ?><?php  echo $default_value ?>');
+                        tooltip_two.text('<?php echo $atts['prefix'] ?><?php  echo $atts['max'] ?>');
 
                         $("#<?php echo $atts['id']; ?>").slider({
                             range: true,
                             animate: true,
                             min: <?php echo $atts['min']; ?>,
                             max: <?php echo $atts['max'];?>,
+	                        <?php  echo( $atts['step'] > 0 ? "step:" . $atts['step'] . "," : '' ); ?>
                             values: [<?php    echo $default_value ?>,<?php echo $atts['max'];?>],
                             slide: function (event, ui) {
 
 
-                                $("#<?php echo $connect ?>").val('<?php echo $atts['prefix'] ?>' + ui.values[0].toLocaleString('us-US') + '-<?php echo $atts['prefix'] ?>' + ui.values[1].toLocaleString('us-US'));
-                                tooltip_one.text('<?php echo $atts['prefix'] ?>' + ui.values[0].toLocaleString('us-US'));
-                                tooltip_two.text('<?php echo $atts['prefix'] ?>' + ui.values[1].toLocaleString('us-US'));
+                                $("#<?php echo $connect ?>").val('<?php echo $atts['prefix'] ?>' + ui.values[0] + '-<?php echo $atts['prefix'] ?>' + ui.values[1]);
+                                tooltip_one.text('<?php echo $atts['prefix'] ?>' + ui.values[0]);
+                                tooltip_two.text('<?php echo $atts['prefix'] ?>' + ui.values[1]);
 
                             },
                             change: function (event, ui) {
@@ -176,29 +177,36 @@ if ( ! class_exists( 'Range_UI_Slider' ) ) {
                             <th scope="row"><label
                                         for="<?php echo esc_attr( $args['content'] . '-min' ); ?>"><?php echo esc_html( __( 'Minimum Value', 'contact-form-7' ) ); ?></label>
                             </th>
-                            <td><input type="text" name="min" class="idvalue oneline option"
+                            <td><input type="text" name="min" class=" oneline option"
                                        id="<?php echo esc_attr( $args['content'] . '-min' ); ?>"/></td>
                         </tr>
                         <tr>
                             <th scope="row"><label
                                         for="<?php echo esc_attr( $args['content'] . '-ui_default' ); ?>"><?php echo esc_html( __( 'Default Value', 'contact-form-7' ) ); ?></label>
                             </th>
-                            <td><input type="text" name="ui_default" class="idvalue oneline option"
+                            <td><input type="text" name="ui_default" class=" oneline option"
                                        id="<?php echo esc_attr( $args['content'] . '-ui_default' ); ?>"/></td>
                         </tr>
                         <tr>
                             <th scope="row"><label
                                         for="<?php echo esc_attr( $args['content'] . '-max' ); ?>"><?php echo esc_html( __( 'Maxium Value', 'contact-form-7' ) ); ?></label>
                             </th>
-                            <td><input type="text" name="max" class="idvalue oneline option"
+                            <td><input type="text" name="max" class=" oneline option"
                                        id="<?php echo esc_attr( $args['content'] . '-max' ); ?>"/></td>
                         </tr>
                         <tr>
                             <th scope="row"><label
                                         for="<?php echo esc_attr( $args['content'] . '-prefix' ); ?>"><?php echo esc_html( __( 'Add Prefix ', 'contact-form-7' ) ); ?></label>
                             </th>
-                            <td><input type="text" name="prefix" class="idvalue oneline option"
+                            <td><input type="text" name="prefix" class=" oneline option"
                                        id="<?php echo esc_attr( $args['content'] . '-prefix' ); ?>"/></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><label
+                                        for="<?php echo esc_attr( $args['content'] . '-step' ); ?>"><?php echo esc_html( __( 'Add step increment ', 'contact-form-7' ) ); ?></label>
+                            </th>
+                            <td><input type="text" name="step" class="oneline option"
+                                       id="<?php echo esc_attr( $args['content'] . '-step' ); ?>"/></td>
                         </tr>
 
 

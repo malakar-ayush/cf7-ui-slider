@@ -3,7 +3,7 @@ Contributors: ayush.malakar
 Tags: cf7 UI, Slider, UI Slider
 Requires at least: 4.0
 Tested up to: 4.8
-Stable tag: 2.0.0
+Stable tag: 2.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,6 +40,11 @@ N/A
 3. Front-end display of the slider
 
 == Changelog ==
+==2.5.0==
+*Supports step increment for both normal and range slider
+*Decimal values are supported
+*Bug fixed where special characters were not allowed
+
 ==2.0.0==
 * Removed Connect ID. But Support is still available.
 * No need to add a hidden input type.

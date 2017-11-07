@@ -3,7 +3,7 @@
  * Plugin Name:       Cf7  UI slider
  * Plugin URI:        https://www.ayushmalakar.com/
  * Description:       A simple way to add jQuery UI Slider to your contact form 7
- * Version:           2.0
+ * Version:           2.5
  * Author:            Ayush Malakar
  * Author URI:        https://www.ayushmalakar.com/
  * Text Domain:       cf7-ui-slider
@@ -20,7 +20,7 @@ if ( ! class_exists( 'CF7_UI_SLIDER' ) ) {
 		 *
 		 * @var string
 		 */
-		const VERSION = '2.0.0';
+		const VERSION = '2.5.0';
 
 		/**
 		 * Instance of this class.
